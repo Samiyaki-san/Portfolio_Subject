@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Siêu Thực</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #111111;
+            --text-sub: #555555;
+            /* Tinh chỉnh lại độ trong suốt cực thấp để tạo hiệu ứng kính thật */
+            --box-bg: rgba(255, 255, 255, 0.15); 
+            --box-border: rgba(255, 255, 255, 0.4);
+            --menu-bg: rgba(255, 255, 255, 0.15);
+        }
+
+        body.dark-mode {
+            --bg-color: #0a0a0a;
+            --text-main: #f0f0f0;
+            --text-sub: #aaaaaa;
+            --box-bg: rgba(20, 20, 20, 0.25);
+            --box-border: rgba(255, 255, 255, 0.1);
+            --menu-bg: rgba(30, 30, 30, 0.2);
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); overflow: hidden;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- CÁC NÚT ĐIỀU HƯỚNG --- */
+        .nav-btn {
+            position: fixed; top: 30px; z-index: 10000; cursor: pointer;
+            font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+            color: var(--text-main); border: 1px solid var(--text-main); padding: 10px 20px;
+            border-radius: 30px; background: transparent; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .nav-btn:hover { background: var(--text-main); color: var(--bg-color); transform: scale(1.05); }
+        
+        #btn-theme { right: 30px; }
+        
+        #btn-home { 
+            left: 30px; 
+            width: 45px; height: 45px; padding: 0; 
+            display: flex; justify-content: center; align-items: center;
+            transform: translateY(-100px); opacity: 0; pointer-events: none; 
+        }
+        #btn-home.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        #btn-home svg { width: 22px; height: 22px; fill: currentColor; }
+
+        /* --- CON TRỎ CHUỘT --- */
+        #cursor-invert {
+            position: fixed; top: 0; left: 0; width: 150px; height: 150px;
+            background-color: white; border-radius: 50%; pointer-events: none;
+            mix-blend-mode: difference; z-index: 9999;
+            transform: translate(-50%, -50%); overflow: hidden; transition: width 0.3s, height 0.3s;
+        }
+        .cursor-ripple {
+            position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+            background-color: black; border-radius: 50%; transform: translate(-50%, -50%);
+            pointer-events: none; animation: innerRipple 0.5s ease-out forwards;
+        }
+        @keyframes innerRipple { 0% { width: 0; height: 0; opacity: 0.8; } 100% { width: 150px; height: 150px; opacity: 0; } }
+
+        #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+        /* --- KHUNG KÍNH MỜ (FROSTED GLASS) --- */
+        .glass-box {
+            border: 1px solid var(--box-border); 
+            background: var(--box-bg);
+            /* THÊM LẠI BACKDROP-FILTER ĐỂ LÀM MỜ THỰC SỰ */
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            color: var(--text-main); 
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* --- TRANG 1: INTRO --- */
+        #intro-view {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 10; text-align: center; width: 80%; max-width: 800px; padding: 40px;
+            border-radius: 10px;
+        }
+        #intro-view.hidden { transform: translate(-50%, -150%); opacity: 0; pointer-events: none; }
+
+        h1 { font-size: 2.5rem; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 10px; }
+        h2 { font-size: 1.1rem; font-weight: 400; letter-spacing: 2px; margin-bottom: 30px; color: var(--text-sub); }
+        .details p { font-size: 1.05rem; margin: 12px 0; text-align: left; line-height: 1.6; }
+        .details strong { display: inline-block; width: 160px; }
+        .btn-enter {
+            display: inline-block; margin-top: 35px; padding: 12px 35px; border: 1px solid var(--text-main);
+            background: transparent; color: var(--text-main); font-size: 1.1rem; font-weight: 500;
+            letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;
+        }
+        .btn-enter:hover { background: var(--text-main); color: var(--bg-color); }
+        .btn-enter:hover ~ #cursor-invert { width: 80px; height: 80px; }
+
+        /* --- TRANG 2: MENU CHỌN BÀI (OSU STYLE CHUẨN) --- */
+        #menu-container {
+            position: fixed; right: 0; top: 85px; 
+            height: calc(100vh - 100px); 
+            width: 440px; /* Rộng hơn chút để chứa độ cong Osu */
+            z-index: 20; 
+            /* Bật cuộn tự nhiên của trình duyệt để mượt nhất */
+            overflow-y: auto; overflow-x: hidden;
+            padding: 20px 0; 
+            transform: translateX(100%); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
+            /* Ẩn thanh cuộn */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #menu-container::-webkit-scrollbar { display: none; }
+        #menu-container.active { transform: translateX(0); pointer-events: auto; }
+
+        .menu-item {
+            background: var(--menu-bg); border: 1px solid var(--box-border);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 20px 30px; 
+            width: 280px; /* Fix cứng width để không bị tràn khi lồi ra */
+            margin-left: auto; margin-right: 30px; margin-bottom: 15px;
+            border-radius: 30px; 
+            cursor: pointer; text-align: right; color: var(--text-main);
+            position: relative; 
+            
+            /* --curve-offset được cập nhật bằng JS tạo đường cong Osu */
+            left: var(--curve-offset, 0px);
+            transform: translateX(20px); 
+            /* Bỏ left ra khỏi transition để cuộn không bị lag */
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+        
+        .menu-item:hover {
+            transform: translateX(-15px) scale(1.02); 
+            background: var(--text-main); color: var(--bg-color);
+        }
+        .menu-item.selected {
+            background: var(--text-main); color: var(--bg-color);
+            transform: translateX(-30px) scale(1.05); 
+            box-shadow: -10px 10px 25px rgba(0,0,0,0.15);
+        }
+        .menu-item .m-title { font-weight: bold; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .menu-item .m-sub { font-size: 0.8rem; opacity: 0.7; margin-top: 5px; }
+
+        /* --- TRANG 3: KHUNG CHI TIẾT BÀI TẬP --- */
+        #detail-view {
+            position: absolute; top: 50%; 
+            left: calc((100% - 380px) / 2); 
+            transform: translate(-50%, 150%); opacity: 0; pointer-events: none;
+            z-index: 15; width: 85%; max-width: 800px; height: 85vh;
+            padding: 40px; display: flex; flex-direction: column; overflow: hidden;
+            border-radius: 12px;
+        }
+        #detail-view.active { transform: translate(-50%, -50%); opacity: 1; pointer-events: auto; }
+
+        .project-header { font-size: 1.8rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px solid var(--text-main); padding-bottom: 10px;}
+        .project-steps { margin-bottom: 25px; font-size: 1.05rem; line-height: 1.6; color: var(--text-sub); flex-shrink: 0;}
+        .project-steps ul { margin: 0; padding-left: 20px; }
+        .project-steps li { margin-bottom: 8px; }
+
+        .gallery-container {
+            flex-grow: 1; border: 1px solid var(--box-border); border-radius: 8px;
+            background-color: rgba(0,0,0,0.03); display: flex; flex-direction: column;
+            overflow: hidden; padding: 20px; position: relative;
+        }
+        .image-wrapper {
+            flex-grow: 1; position: relative; display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px;
+        }
+        .image-wrapper img {
+            max-width: 100%; max-height: 100%; object-fit: contain;
+            position: absolute; opacity: 0; transition: opacity 0.4s ease; border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .image-wrapper img.active { opacity: 1; z-index: 2; }
+        .placeholder { position: absolute; color: var(--text-sub); font-style: italic; z-index: 1;}
+
+        .gallery-controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
+        .arrow { font-size: 1.5rem; cursor: pointer; transition: transform 0.2s; padding: 5px 15px;}
+        .arrow:hover { transform: scale(1.3); }
+        .dots-wrapper { display: flex; gap: 8px; align-items: center; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--text-main); cursor: pointer; transition: all 0.3s; }
+        .dot.active { background-color: var(--text-main); transform: scale(1.3); }
+        .counter { font-size: 0.95rem; font-weight: bold; letter-spacing: 1px; min-width: 40px; text-align: center;}
+    </style>
+</head>
+<body>
+
+    <div class="nav-btn icon-btn" id="btn-home" title="Về trang chủ">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </div>
+    <div class="nav-btn" id="btn-theme">Dark Mode</div>
+    
+    <div id="cursor-invert"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="intro-view" class="glass-box">
+        <h1>Lê Khả Tuấn Dương</h1>
+        <h2>KỸ NĂNG SỐ & TRÍ TUỆ NHÂN TẠO</h2>
+        <div class="details">
+            <p><strong>Trường:</strong> Đại học Công nghệ - ĐHQGHN (UET)</p>
+            <p><strong>Lớp:</strong> EC1 - VNU1001_E252007</p>
+            <p><strong>Mã SV:</strong> 25022148</p>
+            <p><strong>Mục tiêu:</strong> Làm chủ các công cụ AI để tối ưu hóa quy trình nghiên cứu, lập trình và sáng tạo nội dung trong môi trường số.</p>
+        </div>
+        <div class="btn-enter" id="btn-explore">Portfolio</div>
+    </div>
+
+    <div id="menu-container"></div>
+
+    <div id="detail-view" class="glass-box">
+        <div class="project-header" id="detail-title">Tiêu đề bài</div>
+        <div class="project-steps" id="detail-steps"></div>
+        <div class="gallery-container">
+            <div class="image-wrapper" id="image-wrapper">
+                <div class="placeholder">Đang tải hình ảnh...</div>
+            </div>
+            <div class="gallery-controls">
+                <div class="arrow" id="btn-prev">&#8592;</div>
+                <div class="dots-wrapper" id="dots-container"></div>
+                <div class="counter" id="page-counter">1 / 1</div>
+                <div class="arrow" id="btn-next">&#8594;</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const portfolioData = [
+            {
+                title: "Bài 1: Quản lý tệp", subtitle: "Tối ưu hóa dữ liệu",
+                steps: ["Quy tắc đặt tên nhất quán: [Ngày tháng]_[Tên bài]_[Phiên bản].", "Cấu trúc logic: Phân loại theo cây thư mục Năm học > Học kỳ > Môn học.", "Sử dụng công cụ đám mây để đồng bộ hóa."],
+                images: ["https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=800&q=80"]
+            },
+            {
+                title: "Bài 2: Tìm kiếm & Đánh giá", subtitle: "Khai thác học thuật",
+                steps: ["Sử dụng toán tử nâng cao: AND, OR, site:.edu.vn, filetype:pdf.", "Đánh giá nguồn tin: Áp dụng mô hình CRAAP.", "Chiến lược lọc nhiễu thông tin."],
+                images: ["https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80"]
+            },
+            {
+                title: "Bài 3: Viết Prompt", subtitle: "Giao tiếp với AI",
+                steps: ["Cấu trúc Prompt: Role - Context - Task - Format.", "So sánh sự khác biệt chất lượng kết quả."],
+                images: ["https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80"]
+            },
+            {
+                title: "Bài 4: Hợp tác số", subtitle: "Làm việc nhóm",
+                steps: ["Lập kế hoạch: Phân công nhiệm vụ trên nền tảng quản lý.", "Tối ưu quy trình bằng nhãn màu và nhắc nhở."],
+                images: ["https://images.unsplash.com/photo-1611224885990-ab7363d1f2a9?auto=format&fit=crop&w=800&q=80"]
+            },
+            {
+                title: "Bài 5: Sáng tạo nội dung", subtitle: "Multi-AI Workflow",
+                steps: ["Lên kịch bản với ChatGPT.", "Tạo hình ảnh minh họa bằng Midjourney / DALL-E.", "Thiết kế hoàn chỉnh trên Canva."],
+                images: ["https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80"]
+            },
+            {
+                title: "Bài 6: AI Trách nhiệm", subtitle: "Đạo đức công nghệ",
+                steps: ["Cảnh giác thiên kiến (Bias) và ảo giác (Hallucination).", "Bộ 5 nguyên tắc cá nhân: Không lạm dụng, bảo mật riêng tư."],
+                images: ["https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80"]
+            },
+            {
+                title: "Tổng Kết & Đánh Giá", subtitle: "Bài học rút ra",
+                steps: ["Sự chuyển dịch sang 'Tư duy máy tính'.", "Định hướng áp dụng trong chặng đường tiếp theo."],
+                images: ["https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80"]
+            }
+        ];
+
+        /* === LOGIC UI & OSU INFINITE SCROLL === */
+        const introView = document.getElementById('intro-view');
+        const menuContainer = document.getElementById('menu-container');
+        const detailView = document.getElementById('detail-view');
+        const btnHome = document.getElementById('btn-home');
+        let isDetailTransitioning = false; let lastRectY = null;
+        
+        // Render 3 bản sao của data để tạo vòng lặp vô tận liền mạch
+        function renderMenu() {
+            menuContainer.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                portfolioData.forEach((item, index) => {
+                    const btn = document.createElement('div');
+                    btn.className = 'menu-item';
+                    btn.dataset.index = index; // Lưu index gốc để đồng bộ trạng thái
+                    btn.innerHTML = `<div class="m-title">${item.title}</div><div class="m-sub">${item.subtitle}</div>`;
+                    
+                    btn.addEventListener('click', () => {
+                        const indexStr = btn.dataset.index;
+                        const isAlreadySelected = btn.classList.contains('selected');
+
+                        // Gỡ active tất cả
+                        document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('selected'));
+                        
+                        if (isAlreadySelected) {
+                            detailView.classList.remove('active');
+                            ripples.push({ x: width/2 - 150, y: height/2, age: 0, power: -30 }); 
+                            return; 
+                        }
+
+                        // Set active cho CẢ 3 bản sao của bài được chọn
+                        document.querySelectorAll(`.menu-item[data-index="${indexStr}"]`).forEach(el => el.classList.add('selected'));
+                        
+                        if(!detailView.classList.contains('active')) {
+                            detailView.classList.add('active');
+                            isDetailTransitioning = true; 
+                            lastRectY = detailView.getBoundingClientRect().y;
+                            setTimeout(() => isDetailTransitioning = false, 900);
+                        } else {
+                            ripples.push({ x: width/2 - 150, y: height/2, age: 0, power: 25 });
+                        }
+                        openExercise(parseInt(indexStr));
+                    });
+                    menuContainer.appendChild(btn);
+                });
+            }
+        }
+        renderMenu();
+
+        // Thuật toán đường cong Osu!
+        function updateOsuCurve() {
+            const containerRect = menuContainer.getBoundingClientRect();
+            const containerCenter = containerRect.top + containerRect.height / 2;
+            const items = menuContainer.querySelectorAll('.menu-item');
+            
+            items.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const itemCenter = rect.top + rect.height / 2;
+                
+                // Tính khoảng cách từ tâm ô đến tâm màn hình
+                const dist = Math.abs(containerCenter - itemCenter);
+                const maxDist = containerRect.height / 2 + 50; 
+                let ratio = dist / maxDist;
+                if(ratio > 1) ratio = 1;
+                
+                // Công thức đường cong lồi ra ở giữa, cong mạnh về bên phải ở hai đầu
+                const curveOffset = Math.pow(ratio, 1.6) * 120; 
+                item.style.setProperty('--curve-offset', `${curveOffset}px`);
+            });
+        }
+
+        // Khởi tạo vòng lặp mượt
+        requestAnimationFrame(() => {
+            menuContainer.scrollTop = menuContainer.scrollHeight / 3;
+            updateOsuCurve();
+        });
+
+        // Xử lý Infinite Loop Scroll
+        menuContainer.addEventListener('scroll', () => {
+            const third = menuContainer.scrollHeight / 3;
+            // Nếu cuộn lên trên quá 1/3, dịch chuyển ẩn xuống
+            if (menuContainer.scrollTop <= third / 2) {
+                menuContainer.scrollTop += third;
+            } 
+            // Nếu cuộn xuống dưới quá 2/3, dịch chuyển ẩn lên
+            else if (menuContainer.scrollTop >= third * 2) {
+                menuContainer.scrollTop -= third;
+            }
+            updateOsuCurve();
+        });
+
+        // --- CÁC SỰ KIỆN NÚT CHUYỂN TRANG ---
+        document.getElementById('btn-explore').addEventListener('click', () => {
+            introView.classList.add('hidden');
+            menuContainer.classList.add('active');
+            btnHome.classList.add('active'); 
+            ripples.push({ x: width - 100, y: height/2, age: 0, power: 60 });
+        });
+
+        btnHome.addEventListener('click', () => {
+            menuContainer.classList.remove('active');
+            detailView.classList.remove('active');
+            btnHome.classList.remove('active'); 
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('selected')); 
+            introView.classList.remove('hidden');
+            ripples.push({ x: 100, y: 100, age: 0, power: 50 }); 
+        });
+
+        let activeExerciseIndex = 0; let currentImageIndex = 0; let currentImagesArray = [];
+
+        function openExercise(index) {
+            activeExerciseIndex = index; const data = portfolioData[index];
+            currentImagesArray = data.images; currentImageIndex = 0;
+
+            document.getElementById('detail-title').textContent = data.title;
+            let stepsHtml = '<ul>'; data.steps.forEach(s => stepsHtml += `<li>${s}</li>`);
+            document.getElementById('detail-steps').innerHTML = stepsHtml + '</ul>';
+
+            const imgWrapper = document.getElementById('image-wrapper');
+            imgWrapper.querySelectorAll('img').forEach(img => img.remove());
+            currentImagesArray.forEach((src, i) => {
+                const img = document.createElement('img'); img.src = src;
+                if(i === 0) img.classList.add('active'); imgWrapper.appendChild(img);
+            });
+            updateGalleryControls();
+        }
+
+        function updateGalleryControls() {
+            const imgs = document.getElementById('image-wrapper').querySelectorAll('img');
+            imgs.forEach((img, i) => img.classList.toggle('active', i === currentImageIndex));
+            const dotsContainer = document.getElementById('dots-container'); dotsContainer.innerHTML = ''; 
+            currentImagesArray.forEach((_, i) => {
+                const dot = document.createElement('div'); dot.className = 'dot';
+                if(i === currentImageIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => { currentImageIndex = i; updateGalleryControls(); });
+                dotsContainer.appendChild(dot);
+            });
+            document.getElementById('page-counter').textContent = `${currentImageIndex + 1} / ${currentImagesArray.length}`;
+        }
+
+        document.getElementById('btn-next').addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex < currentImagesArray.length - 1) ? currentImageIndex + 1 : 0;
+            updateGalleryControls(); ripples.push({ x: width/2 - 150, y: height - 150, age: 0, power: 10 });
+        });
+        document.getElementById('btn-prev').addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : currentImagesArray.length - 1;
+            updateGalleryControls(); ripples.push({ x: width/2 - 150, y: height - 150, age: 0, power: 10 });
+        });
+
+        /* === CANVAS VẬT LÝ === */
+        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
+        const cursorInvert = document.getElementById('cursor-invert'); const themeBtn = document.getElementById('btn-theme');
+        let isDark = false; let canvasTheme = { shape: 'rgba(0, 0, 0, 0.4)', grid: 'rgba(200, 200, 200, 0.4)' };
+
+        themeBtn.addEventListener('click', () => {
+            isDark = !isDark; document.body.classList.toggle('dark-mode');
+            if (isDark) { themeBtn.textContent = 'Light Mode'; canvasTheme.shape = 'rgba(255, 255, 255, 0.3)'; canvasTheme.grid = 'rgba(255, 255, 255, 0.15)'; } 
+            else { themeBtn.textContent = 'Dark Mode'; canvasTheme.shape = 'rgba(0, 0, 0, 0.4)'; canvasTheme.grid = 'rgba(200, 200, 200, 0.4)'; }
+        });
+
+        let width, height; let shapes = [], ripples = []; 
+        let mouseX = -1000, mouseY = -1000; let isMouseDown = false, lastRippleX = -1000, lastRippleY = -1000;
+
+        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+
+        class Shape {
+            constructor() {
+                this.type = [0, 1, 2, 3][Math.floor(Math.random() * 4)];
+                this.x = Math.random() * width; this.y = Math.random() * height;
+                this.size = Math.random() * 15 + 8; 
+                this.vx = (Math.random() - 0.5) * 0.3; this.vy = (Math.random() - 0.5) * 0.3;
+                this.angle = Math.random() * Math.PI * 2; this.vAngle = (Math.random() - 0.5) * 0.005; 
+            }
+            draw() {
+                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+                ctx.strokeStyle = canvasTheme.shape; ctx.lineWidth = 1.5; ctx.beginPath();
+                if (this.type === 0) { ctx.arc(0, 0, this.size, 0, Math.PI * 2); } 
+                else if (this.type === 1) { ctx.moveTo(0, -this.size); ctx.lineTo(this.size * 0.866, this.size * 0.5); ctx.lineTo(-this.size * 0.866, this.size * 0.5); ctx.closePath(); } 
+                else if (this.type === 2) { ctx.moveTo(-this.size, -this.size); ctx.lineTo(this.size, this.size); ctx.moveTo(this.size, -this.size); ctx.lineTo(-this.size, this.size); } 
+                else if (this.type === 3) { ctx.arc(0, 0, this.size, 0, Math.PI * 2); ctx.moveTo(-this.size * 0.7, -this.size * 0.7); ctx.lineTo(-this.size * 1.2, -this.size * 1.5); ctx.lineTo(-this.size * 0.2, -this.size * 0.9); ctx.moveTo(this.size * 0.7, -this.size * 0.7); ctx.lineTo(this.size * 1.2, -this.size * 1.5); ctx.lineTo(this.size * 0.2, -this.size * 0.9); }
+                ctx.stroke(); ctx.restore();
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy; this.angle += this.vAngle;
+                let currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (currentSpeed > 0.4) { this.vx *= 0.95; this.vy *= 0.95; }
+                if (this.x < -50) this.x = width + 50; if (this.x > width + 50) this.x = -50;
+                if (this.y < -50) this.y = height + 50; if (this.y > height + 50) this.y = -50;
+            }
+        }
+        for (let i = 0; i < 30; i++) shapes.push(new Shape());
+
+        function drawWaveGrid() {
+            const spacing = 45; const MAX_WAVE_RADIUS = 400;
+            ripples = ripples.filter(r => r.age < 150); ripples.forEach(r => r.age += 0.8); 
+            ctx.lineWidth = 1; ctx.strokeStyle = canvasTheme.grid; 
+
+            for (let y = 0; y <= height; y += spacing) {
+                ctx.beginPath();
+                for (let x = 0; x <= width; x += spacing / 2) {
+                    let dy = 0; 
+                    ripples.forEach(r => {
+                        let dist = Math.hypot(x - r.x, y - r.y);
+                        if (dist < MAX_WAVE_RADIUS) {
+                            let waveFront = r.age * 3.5;
+                            if (dist < waveFront + 150 && dist > waveFront - 150) {
+                                let damp = Math.exp(-Math.pow(dist - waveFront, 2) / 3000);
+                                let wave = Math.cos((dist - waveFront) * 0.05);
+                                let spatialDamping = 1 - (dist / MAX_WAVE_RADIUS); 
+                                dy += wave * damp * (r.power || 20) * (1 - r.age/150) * spatialDamping; 
+                            }
+                        }
+                    });
+                    if (x === 0) ctx.moveTo(x, y + dy); else ctx.lineTo(x, y + dy);
+                }
+                ctx.stroke();
+            }
+
+            for (let x = 0; x <= width; x += spacing) {
+                ctx.beginPath();
+                for (let y = 0; y <= height; y += spacing / 2) {
+                    let dx = 0; 
+                    ripples.forEach(r => {
+                        let dist = Math.hypot(x - r.x, y - r.y);
+                        if (dist < MAX_WAVE_RADIUS) {
+                            let waveFront = r.age * 3.5;
+                            if (dist < waveFront + 150 && dist > waveFront - 150) {
+                                let damp = Math.exp(-Math.pow(dist - waveFront, 2) / 3000);
+                                let wave = Math.cos((dist - waveFront) * 0.05);
+                                let spatialDamping = 1 - (dist / MAX_WAVE_RADIUS);
+                                dx += wave * damp * (r.power || 20) * (1 - r.age/150) * spatialDamping;
+                            }
+                        }
+                    });
+                    if (y === 0) ctx.moveTo(x + dx, y); else ctx.lineTo(x + dx, y);
+                }
+                ctx.stroke();
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height); drawWaveGrid();
+            shapes.forEach(shape => { shape.update(); shape.draw(); });
+
+            if (isDetailTransitioning) {
+                const rect = detailView.getBoundingClientRect();
+                if (lastRectY !== null) {
+                    const speed = Math.abs(rect.y - lastRectY);
+                    if (speed > 2 && Math.random() > 0.4) { 
+                        ripples.push({ x: rect.x + Math.random() * rect.width, y: rect.y + rect.height, age: 0, power: 30 });
+                    }
+                }
+                lastRectY = rect.y;
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        /* Tương tác chuột */
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            cursorInvert.style.transform = `translate(${mouseX - 75}px, ${mouseY - 75}px)`; 
+            if (isMouseDown && Math.hypot(e.clientX - lastRippleX, e.clientY - lastRippleY) > 30) { 
+                ripples.push({ x: e.clientX, y: e.clientY, age: 0 });
+                lastRippleX = e.clientX; lastRippleY = e.clientY;
+            }
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            if(e.target.closest('.nav-btn') || e.target.closest('.arrow') || e.target.closest('.dot') || e.target.closest('.btn-enter') || e.target.closest('.menu-item')) return;
+            isMouseDown = true;
+            ripples.push({ x: e.clientX, y: e.clientY, age: 0 });
+            lastRippleX = e.clientX; lastRippleY = e.clientY;
+            
+            const innerRipple = document.createElement('div'); innerRipple.className = 'cursor-ripple';
+            cursorInvert.appendChild(innerRipple); setTimeout(() => innerRipple.remove(), 500);
+            
+            shapes.forEach(shape => {
+                const dx = shape.x - e.clientX, dy = shape.y - e.clientY, dist = Math.hypot(dx, dy);
+                if (dist < 180 && dist > 0) {
+                    const f = (180 - dist) / 180;
+                    shape.vx += (dx / dist) * f * 3; shape.vy += (dy / dist) * f * 3; shape.vAngle += (Math.random() - 0.5) * f * 0.05; 
+                }
+            });
+        });
+        document.addEventListener('mouseup', () => isMouseDown = false);
+
+    </script>
+</body>
+</html>
