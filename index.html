@@ -9,7 +9,6 @@
             --bg-color: #ffffff;
             --text-main: #111111;
             --text-sub: #555555;
-            /* Tinh chỉnh lại độ trong suốt cực thấp để tạo hiệu ứng kính thật */
             --box-bg: rgba(255, 255, 255, 0.15); 
             --box-border: rgba(255, 255, 255, 0.4);
             --menu-bg: rgba(255, 255, 255, 0.15);
@@ -67,16 +66,12 @@
 
         #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        /* --- KHUNG KÍNH MỜ (FROSTED GLASS) --- */
+        /* --- KHUNG KÍNH MỜ --- */
         .glass-box {
-            border: 1px solid var(--box-border); 
-            background: var(--box-bg);
-            /* THÊM LẠI BACKDROP-FILTER ĐỂ LÀM MỜ THỰC SỰ */
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--box-border); background: var(--box-bg);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            color: var(--text-main); 
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            color: var(--text-main); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         /* --- TRANG 1: INTRO --- */
@@ -99,20 +94,12 @@
         .btn-enter:hover { background: var(--text-main); color: var(--bg-color); }
         .btn-enter:hover ~ #cursor-invert { width: 80px; height: 80px; }
 
-        /* --- TRANG 2: MENU CHỌN BÀI (OSU STYLE CHUẨN) --- */
+        /* --- TRANG 2: MENU CHỌN BÀI --- */
         #menu-container {
-            position: fixed; right: 0; top: 85px; 
-            height: calc(100vh - 100px); 
-            width: 440px; /* Rộng hơn chút để chứa độ cong Osu */
-            z-index: 20; 
-            /* Bật cuộn tự nhiên của trình duyệt để mượt nhất */
-            overflow-y: auto; overflow-x: hidden;
-            padding: 20px 0; 
+            position: fixed; right: 0; top: 85px; height: calc(100vh - 100px); width: 440px; 
+            z-index: 20; overflow-y: auto; overflow-x: hidden; padding: 20px 0; 
             transform: translateX(100%); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            pointer-events: none;
-            /* Ẩn thanh cuộn */
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            pointer-events: none; scrollbar-width: none; -ms-overflow-style: none;
         }
         #menu-container::-webkit-scrollbar { display: none; }
         #menu-container.active { transform: translateX(0); pointer-events: auto; }
@@ -120,36 +107,22 @@
         .menu-item {
             background: var(--menu-bg); border: 1px solid var(--box-border);
             backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 20px 30px; 
-            width: 280px; /* Fix cứng width để không bị tràn khi lồi ra */
-            margin-left: auto; margin-right: 30px; margin-bottom: 15px;
-            border-radius: 30px; 
-            cursor: pointer; text-align: right; color: var(--text-main);
-            position: relative; 
-            
-            /* --curve-offset được cập nhật bằng JS tạo đường cong Osu */
-            left: var(--curve-offset, 0px);
-            transform: translateX(20px); 
-            /* Bỏ left ra khỏi transition để cuộn không bị lag */
+            padding: 20px 30px; width: 280px; margin-left: auto; margin-right: 30px; margin-bottom: 15px;
+            border-radius: 30px; cursor: pointer; text-align: right; color: var(--text-main);
+            position: relative; left: var(--curve-offset, 0px); transform: translateX(20px); 
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s, color 0.3s, box-shadow 0.3s;
         }
-        
-        .menu-item:hover {
-            transform: translateX(-15px) scale(1.02); 
-            background: var(--text-main); color: var(--bg-color);
-        }
+        .menu-item:hover { transform: translateX(-15px) scale(1.02); background: var(--text-main); color: var(--bg-color); }
         .menu-item.selected {
             background: var(--text-main); color: var(--bg-color);
-            transform: translateX(-30px) scale(1.05); 
-            box-shadow: -10px 10px 25px rgba(0,0,0,0.15);
+            transform: translateX(-30px) scale(1.05); box-shadow: -10px 10px 25px rgba(0,0,0,0.15);
         }
         .menu-item .m-title { font-weight: bold; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
         .menu-item .m-sub { font-size: 0.8rem; opacity: 0.7; margin-top: 5px; }
 
         /* --- TRANG 3: KHUNG CHI TIẾT BÀI TẬP --- */
         #detail-view {
-            position: absolute; top: 50%; 
-            left: calc((100% - 380px) / 2); 
+            position: absolute; top: 50%; left: calc((100% - 380px) / 2); 
             transform: translate(-50%, 150%); opacity: 0; pointer-events: none;
             z-index: 15; width: 85%; max-width: 800px; height: 85vh;
             padding: 40px; display: flex; flex-direction: column; overflow: hidden;
@@ -158,7 +131,9 @@
         #detail-view.active { transform: translate(-50%, -50%); opacity: 1; pointer-events: auto; }
 
         .project-header { font-size: 1.8rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px solid var(--text-main); padding-bottom: 10px;}
-        .project-steps { margin-bottom: 25px; font-size: 1.05rem; line-height: 1.6; color: var(--text-sub); flex-shrink: 0;}
+        
+        /* Cập nhật CSS phần mô tả bước để nó thay đổi mượt mà */
+        .project-steps { margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6; color: var(--text-sub); flex-shrink: 0; min-height: 40px; transition: opacity 0.3s ease;}
         .project-steps ul { margin: 0; padding-left: 20px; }
         .project-steps li { margin-bottom: 8px; }
 
@@ -177,15 +152,14 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .image-wrapper img.active { opacity: 1; z-index: 2; }
-        .placeholder { position: absolute; color: var(--text-sub); font-style: italic; z-index: 1;}
 
         .gallery-controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
         .arrow { font-size: 1.5rem; cursor: pointer; transition: transform 0.2s; padding: 5px 15px;}
         .arrow:hover { transform: scale(1.3); }
-        .dots-wrapper { display: flex; gap: 8px; align-items: center; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--text-main); cursor: pointer; transition: all 0.3s; }
+        .dots-wrapper { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center;}
+        .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--text-main); cursor: pointer; transition: all 0.3s; margin: 2px;}
         .dot.active { background-color: var(--text-main); transform: scale(1.3); }
-        .counter { font-size: 0.95rem; font-weight: bold; letter-spacing: 1px; min-width: 40px; text-align: center;}
+        .counter { font-size: 0.95rem; font-weight: bold; letter-spacing: 1px; min-width: 50px; text-align: center;}
     </style>
 </head>
 <body>
@@ -214,11 +188,11 @@
 
     <div id="detail-view" class="glass-box">
         <div class="project-header" id="detail-title">Tiêu đề bài</div>
+        
         <div class="project-steps" id="detail-steps"></div>
+        
         <div class="gallery-container">
-            <div class="image-wrapper" id="image-wrapper">
-                <div class="placeholder">Đang tải hình ảnh...</div>
-            </div>
+            <div class="image-wrapper" id="image-wrapper"></div>
             <div class="gallery-controls">
                 <div class="arrow" id="btn-prev">&#8592;</div>
                 <div class="dots-wrapper" id="dots-container"></div>
@@ -229,68 +203,70 @@
     </div>
 
     <script>
+        /* === CẤU TRÚC DỮ LIỆU MỚI: GÓI CHỮ VÀ ẢNH VÀO TỪNG "SLIDE" === */
         const portfolioData = [
             {
-                title: "Bài 1: Thao tác cơ bản với tệp tin và thư mục", 
-                subtitle: "Rèn luyện kỹ năng tạo, đổi tên, sao chép, di chuyển, xóa tệp tin và thư mục một cách thành thạo trên hệ điều hành Windows (có thể điều chỉnh cho macOS/Linux).",
-                steps: [
-                    "1. Mở File Explorer: Nhấn tổ hợp phím Windows + E hoặc nhấp vào biểu tượng thư mục màu vàng trên thanh tác vụ.",
-                    "2. Truy cập ổ đĩa/thư mục: Ở cột bên trái, nhấp vào This PC, sau đó nhấp đúp vào một ổ đĩa không phải ổ hệ thống (ví dụ: ổ D: hoặc E:). Nếu chỉ có ổ C:, hãy vào thư mục Documents.",
-                    "3. Tạo thư mục mới: Nhấp chuột phải vào một khoảng trống -> chọn New -> Folder. Đặt tên thư mục là ThucHanh_hotensinhvien (ví dụ: ThucHanh_NguyenVanA). Nhấn Enter.",
-                    "4. Vào thư mục vừa tạo: Nhấp đúp vào thư mục ThucHanh_NguyenVanA.",
-                    "5. Tạo tệp tin văn bản: Nhấp chuột phải vào khoảng trống -> New -> Text Document. Đặt tên là GhiChu.txt. Nhấn Enter.",
-                    "6. Nhập nội dung vào tệp tin: Nhấp đúp mở GhiChu.txt, gõ nội dung bất kỳ (ví dụ: 'Bài thực hành tuần 1'). Chọn File -> Save (hoặc Ctrl + S) để lưu lại, sau đó đóng cửa sổ.",
-                    "7. Đổi tên tệp tin: Nhấp chuột phải vào GhiChu.txt -> chọn biểu tượng Đổi tên (Rename) hoặc nhấn phím F2. Đổi tên thành GhiChuQuanTrong.txt và nhấn Enter.",
-                    "8. Sao chép tệp tin: Nhấp chuột phải vào GhiChuQuanTrong.txt -> chọn Copy (hoặc nhấn Ctrl + C).",
-                    "9. Tạo thư mục con và Dán tệp: Tạo thư mục mới tên SaoLuu nằm bên trong thư mục thực hành hiện tại. Vào thư mục SaoLuu, nhấp chuột phải chọn Paste (hoặc nhấn Ctrl + V) để dán tệp tin.",
-                    "10. Di chuyển tệp tin (Cắt và Dán): Quay lại thư mục gốc ban đầu. Tạo thêm thư mục mới tên DiChuyen. Nhấp chuột phải vào tệp GhiChuQuanTrong.txt gốc -> chọn Cut (hoặc Ctrl + X). Vào thư mục DiChuyen, nhấp chuột phải chọn Paste (hoặc Ctrl + V).",
-                    "11. Xóa tệp tin vĩnh viễn: Chọn tệp GhiChuQuanTrong.txt vừa di chuyển, nhấn tổ hợp phím Shift + Delete. Hệ thống hiện thông báo xác nhận, chọn Yes để xóa vĩnh viễn tệp tin khỏi máy tính không qua Thùng rác.",
-                    "12. Khôi phục từ Thùng rác (Tùy chọn): Tìm biểu tượng Recycle Bin trên màn hình nền, nhấp đúp để mở. Tìm tệp GhiChuQuanTrong.txt đã xóa, nhấp chuột phải vào nó và chọn Restore. Tệp sẽ quay trở lại vị trí ban đầu."
-                ],
-                images: [
-                    "images/image_1_p1.png",
-                    "images/image_2_p1.png",
-                    "images/image_3_p1.png",
-                    "images/image_4_p1.png",
-                    "images/image_5_p1.png",
-                    "images/image_6_p1.png",
-                    "images/image_7_p1.png",
-                    "images/image_8_p1.png",
-                    "images/image_9_p1.png",
-                    "images/image_10_p1.png",
-                    "images/image_11_p1.png",
-                    "images/image_12_p1.png"
+                title: "Bài 1: Tệp tin và Thư mục", 
+                subtitle: "Kỹ năng Hệ điều hành",
+                slides: [
+                    { text: ["1. Mở File Explorer: Nhấn tổ hợp phím Windows + E hoặc nhấp vào biểu tượng thư mục."], img: "images/image_1_p1.png" },
+                    { text: ["2. Truy cập ổ đĩa/thư mục: Ở cột bên trái, nhấp vào This PC, sau đó nhấp đúp vào một ổ đĩa."], img: "images/image_2_p1.png" },
+                    { text: ["3. Tạo thư mục mới: Nhấp chuột phải -> chọn New -> Folder. Đặt tên là ThucHanh_hotensinhvien."], img: "images/image_3_p1.png" },
+                    { text: ["4. Vào thư mục vừa tạo: Nhấp đúp vào thư mục ThucHanh_NguyenVanA."], img: "images/image_4_p1.png" },
+                    { text: ["5. Tạo tệp tin văn bản: Nhấp chuột phải -> New -> Text Document. Đặt tên GhiChu.txt."], img: "images/image_5_p1.png" },
+                    { text: ["6. Nhập nội dung vào tệp tin: Nhấp đúp mở GhiChu.txt, gõ nội dung và Save (Ctrl + S)."], img: "images/image_6_p1.png" },
+                    { text: ["7. Đổi tên tệp tin: Nhấp chuột phải vào GhiChu.txt -> Rename (F2) thành GhiChuQuanTrong.txt."], img: "images/image_7_p1.png" },
+                    { text: ["8. Sao chép tệp tin: Nhấp chuột phải vào GhiChuQuanTrong.txt -> Copy (Ctrl + C)."], img: "images/image_8_p1.png" },
+                    { text: ["9. Tạo thư mục SaoLuu và Dán tệp: Tạo thư mục SaoLuu, nhấp chuột phải chọn Paste (Ctrl + V)."], img: "images/image_9_p1.png" },
+                    { text: ["10. Di chuyển tệp tin (Cut & Paste): Tạo thư mục DiChuyen. Cắt tệp gốc (Ctrl+X) và dán (Ctrl+V) vào thư mục mới."], img: "images/image_10_p1.png" },
+                    { text: ["11. Xóa tệp tin vĩnh viễn: Chọn tệp, nhấn Shift + Delete. Chọn Yes để xác nhận xóa không qua Thùng rác."], img: "images/image_11_p1.png" },
+                    { text: ["12. Khôi phục từ Thùng rác: Mở Recycle Bin, tìm tệp đã xóa, nhấp chuột phải và chọn Restore."], img: "images/image_12_p1.png" }
                 ]
             },
             {
-                title: "Bài 2: Tìm kiếm & Đánh giá", subtitle: "Khai thác học thuật",
-                steps: ["Sử dụng toán tử nâng cao: AND, OR, site:.edu.vn, filetype:pdf.", "Đánh giá nguồn tin: Áp dụng mô hình CRAAP.", "Chiến lược lọc nhiễu thông tin."],
-                images: ["https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80"]
+                title: "Bài 2: Tìm kiếm & Đánh giá", 
+                subtitle: "Khai thác học thuật",
+                slides: [
+                    { text: ["Sử dụng toán tử nâng cao: AND, OR, site:.edu.vn, filetype:pdf để thu hẹp phạm vi tìm kiếm."], img: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80" },
+                    { text: ["Đánh giá nguồn tin: Áp dụng mô hình CRAAP để lọc nhiễu thông tin."], img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80" }
+                ]
             },
             {
-                title: "Bài 3: Viết Prompt", subtitle: "Giao tiếp với AI",
-                steps: ["Cấu trúc Prompt: Role - Context - Task - Format.", "So sánh sự khác biệt chất lượng kết quả."],
-                images: ["https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80"]
+                title: "Bài 3: Viết Prompt", 
+                subtitle: "Giao tiếp với AI",
+                slides: [
+                    { text: ["Cấu trúc Prompt chuẩn: Role (Vai trò) - Context (Ngữ cảnh) - Task (Nhiệm vụ) - Format (Định dạng)."], img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80" },
+                    { text: ["So sánh sự khác biệt: Prompt chuẩn giúp AI hạn chế ảo giác và trả lời đúng trọng tâm hơn."], img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80" }
+                ]
             },
             {
-                title: "Bài 4: Hợp tác số", subtitle: "Làm việc nhóm",
-                steps: ["Lập kế hoạch: Phân công nhiệm vụ trên nền tảng quản lý.", "Tối ưu quy trình bằng nhãn màu và nhắc nhở."],
-                images: ["https://images.unsplash.com/photo-1611224885990-ab7363d1f2a9?auto=format&fit=crop&w=800&q=80"]
+                title: "Bài 4: Hợp tác số", 
+                subtitle: "Làm việc nhóm",
+                slides: [
+                    { text: ["Lập kế hoạch: Phân công nhiệm vụ trên các nền tảng quản lý như Trello, Notion."], img: "https://images.unsplash.com/photo-1611224885990-ab7363d1f2a9?auto=format&fit=crop&w=800&q=80" }
+                ]
             },
             {
-                title: "Bài 5: Sáng tạo nội dung", subtitle: "Multi-AI Workflow",
-                steps: ["Lên kịch bản với ChatGPT.", "Tạo hình ảnh minh họa bằng Midjourney / DALL-E.", "Thiết kế hoàn chỉnh trên Canva."],
-                images: ["https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80"]
+                title: "Bài 5: Sáng tạo nội dung", 
+                subtitle: "Multi-AI Workflow",
+                slides: [
+                    { text: ["Bước 1 & 2: Lên kịch bản ý tưởng với ChatGPT, sau đó dùng Midjourney/DALL-E tạo ảnh minh họa."], img: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80" },
+                    { text: ["Bước 3: Lắp ráp các thành phần lại và thiết kế bố cục hoàn chỉnh trên Canva."], img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80" }
+                ]
             },
             {
-                title: "Bài 6: AI Trách nhiệm", subtitle: "Đạo đức công nghệ",
-                steps: ["Cảnh giác thiên kiến (Bias) và ảo giác (Hallucination).", "Bộ 5 nguyên tắc cá nhân: Không lạm dụng, bảo mật riêng tư."],
-                images: ["https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80"]
+                title: "Bài 6: AI Trách nhiệm", 
+                subtitle: "Đạo đức công nghệ",
+                slides: [
+                    { text: ["Cảnh giác với thiên kiến (Bias) và bảo mật dữ liệu riêng tư khi dùng AI."], img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80" }
+                ]
             },
             {
-                title: "Tổng Kết & Đánh Giá", subtitle: "Bài học rút ra",
-                steps: ["Sự chuyển dịch sang 'Tư duy máy tính'.", "Định hướng áp dụng trong chặng đường tiếp theo."],
-                images: ["https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80"]
+                title: "Tổng Kết", 
+                subtitle: "Bài học rút ra",
+                slides: [
+                    { text: ["Sự chuyển dịch từ người dùng thụ động sang người điều khiển bằng 'Tư duy máy tính'."], img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80" }
+                ]
             }
         ];
 
@@ -301,21 +277,20 @@
         const btnHome = document.getElementById('btn-home');
         let isDetailTransitioning = false; let lastRectY = null;
         
-        // Render 3 bản sao của data để tạo vòng lặp vô tận liền mạch
+        // Render 3 bản sao của data để tạo vòng lặp vô tận
         function renderMenu() {
             menuContainer.innerHTML = '';
             for (let i = 0; i < 3; i++) {
                 portfolioData.forEach((item, index) => {
                     const btn = document.createElement('div');
                     btn.className = 'menu-item';
-                    btn.dataset.index = index; // Lưu index gốc để đồng bộ trạng thái
+                    btn.dataset.index = index; 
                     btn.innerHTML = `<div class="m-title">${item.title}</div><div class="m-sub">${item.subtitle}</div>`;
                     
                     btn.addEventListener('click', () => {
                         const indexStr = btn.dataset.index;
                         const isAlreadySelected = btn.classList.contains('selected');
 
-                        // Gỡ active tất cả
                         document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('selected'));
                         
                         if (isAlreadySelected) {
@@ -324,7 +299,6 @@
                             return; 
                         }
 
-                        // Set active cho CẢ 3 bản sao của bài được chọn
                         document.querySelectorAll(`.menu-item[data-index="${indexStr}"]`).forEach(el => el.classList.add('selected'));
                         
                         if(!detailView.classList.contains('active')) {
@@ -343,7 +317,6 @@
         }
         renderMenu();
 
-        // Thuật toán đường cong Osu!
         function updateOsuCurve() {
             const containerRect = menuContainer.getBoundingClientRect();
             const containerCenter = containerRect.top + containerRect.height / 2;
@@ -352,40 +325,30 @@
             items.forEach(item => {
                 const rect = item.getBoundingClientRect();
                 const itemCenter = rect.top + rect.height / 2;
-                
-                // Tính khoảng cách từ tâm ô đến tâm màn hình
                 const dist = Math.abs(containerCenter - itemCenter);
                 const maxDist = containerRect.height / 2 + 50; 
                 let ratio = dist / maxDist;
                 if(ratio > 1) ratio = 1;
-                
-                // Công thức đường cong lồi ra ở giữa, cong mạnh về bên phải ở hai đầu
                 const curveOffset = Math.pow(ratio, 1.6) * 120; 
                 item.style.setProperty('--curve-offset', `${curveOffset}px`);
             });
         }
 
-        // Khởi tạo vòng lặp mượt
         requestAnimationFrame(() => {
             menuContainer.scrollTop = menuContainer.scrollHeight / 3;
             updateOsuCurve();
         });
 
-        // Xử lý Infinite Loop Scroll
         menuContainer.addEventListener('scroll', () => {
             const third = menuContainer.scrollHeight / 3;
-            // Nếu cuộn lên trên quá 1/3, dịch chuyển ẩn xuống
             if (menuContainer.scrollTop <= third / 2) {
                 menuContainer.scrollTop += third;
-            } 
-            // Nếu cuộn xuống dưới quá 2/3, dịch chuyển ẩn lên
-            else if (menuContainer.scrollTop >= third * 2) {
+            } else if (menuContainer.scrollTop >= third * 2) {
                 menuContainer.scrollTop -= third;
             }
             updateOsuCurve();
         });
 
-        // --- CÁC SỰ KIỆN NÚT CHUYỂN TRANG ---
         document.getElementById('btn-explore').addEventListener('click', () => {
             introView.classList.add('hidden');
             menuContainer.classList.add('active');
@@ -402,45 +365,74 @@
             ripples.push({ x: 100, y: 100, age: 0, power: 50 }); 
         });
 
-        let activeExerciseIndex = 0; let currentImageIndex = 0; let currentImagesArray = [];
+        /* === LOGIC ĐIỀU KHIỂN SLIDER ĐỒNG BỘ (CHỮ VÀ ẢNH) === */
+        let currentSlidesArray = []; 
+        let currentSlideIndex = 0;
 
         function openExercise(index) {
-            activeExerciseIndex = index; const data = portfolioData[index];
-            currentImagesArray = data.images; currentImageIndex = 0;
+            const data = portfolioData[index];
+            currentSlidesArray = data.slides; 
+            currentSlideIndex = 0;
 
             document.getElementById('detail-title').textContent = data.title;
-            let stepsHtml = '<ul>'; data.steps.forEach(s => stepsHtml += `<li>${s}</li>`);
-            document.getElementById('detail-steps').innerHTML = stepsHtml + '</ul>';
 
+            // Load toàn bộ ảnh vào khung (nhưng ẩn đi)
             const imgWrapper = document.getElementById('image-wrapper');
-            imgWrapper.querySelectorAll('img').forEach(img => img.remove());
-            currentImagesArray.forEach((src, i) => {
-                const img = document.createElement('img'); img.src = src;
-                if(i === 0) img.classList.add('active'); imgWrapper.appendChild(img);
+            imgWrapper.innerHTML = '';
+            currentSlidesArray.forEach((slide, i) => {
+                const img = document.createElement('img'); 
+                img.src = slide.img;
+                if(i === 0) img.classList.add('active'); 
+                imgWrapper.appendChild(img);
             });
-            updateGalleryControls();
+            
+            // Cập nhật giao diện lần đầu
+            updateSlideContent();
         }
 
-        function updateGalleryControls() {
+        function updateSlideContent() {
+            // 1. Cập nhật Text
+            const currentSlide = currentSlidesArray[currentSlideIndex];
+            const stepsDiv = document.getElementById('detail-steps');
+            stepsDiv.style.opacity = 0; // Hiệu ứng mờ dần khi chuyển text
+            setTimeout(() => {
+                let stepsHtml = '<ul>'; 
+                currentSlide.text.forEach(s => stepsHtml += `<li>${s}</li>`);
+                stepsDiv.innerHTML = stepsHtml + '</ul>';
+                stepsDiv.style.opacity = 1;
+            }, 150);
+
+            // 2. Cập nhật Ảnh
             const imgs = document.getElementById('image-wrapper').querySelectorAll('img');
-            imgs.forEach((img, i) => img.classList.toggle('active', i === currentImageIndex));
-            const dotsContainer = document.getElementById('dots-container'); dotsContainer.innerHTML = ''; 
-            currentImagesArray.forEach((_, i) => {
+            imgs.forEach((img, i) => img.classList.toggle('active', i === currentSlideIndex));
+            
+            // 3. Cập nhật Dấu chấm (Dots)
+            const dotsContainer = document.getElementById('dots-container'); 
+            dotsContainer.innerHTML = ''; 
+            currentSlidesArray.forEach((_, i) => {
                 const dot = document.createElement('div'); dot.className = 'dot';
-                if(i === currentImageIndex) dot.classList.add('active');
-                dot.addEventListener('click', () => { currentImageIndex = i; updateGalleryControls(); });
+                if(i === currentSlideIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => { 
+                    currentSlideIndex = i; 
+                    updateSlideContent(); 
+                });
                 dotsContainer.appendChild(dot);
             });
-            document.getElementById('page-counter').textContent = `${currentImageIndex + 1} / ${currentImagesArray.length}`;
+            
+            // 4. Cập nhật Số đếm
+            document.getElementById('page-counter').textContent = `${currentSlideIndex + 1} / ${currentSlidesArray.length}`;
         }
 
+        // Bắt sự kiện ấn nút Mũi tên
         document.getElementById('btn-next').addEventListener('click', () => {
-            currentImageIndex = (currentImageIndex < currentImagesArray.length - 1) ? currentImageIndex + 1 : 0;
-            updateGalleryControls(); ripples.push({ x: width/2 - 150, y: height - 150, age: 0, power: 10 });
+            currentSlideIndex = (currentSlideIndex < currentSlidesArray.length - 1) ? currentSlideIndex + 1 : 0;
+            updateSlideContent(); 
+            ripples.push({ x: width/2 - 150, y: height - 150, age: 0, power: 10 });
         });
         document.getElementById('btn-prev').addEventListener('click', () => {
-            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : currentImagesArray.length - 1;
-            updateGalleryControls(); ripples.push({ x: width/2 - 150, y: height - 150, age: 0, power: 10 });
+            currentSlideIndex = (currentSlideIndex > 0) ? currentSlideIndex - 1 : currentSlidesArray.length - 1;
+            updateSlideContent(); 
+            ripples.push({ x: width/2 - 150, y: height - 150, age: 0, power: 10 });
         });
 
         /* === CANVAS VẬT LÝ === */
