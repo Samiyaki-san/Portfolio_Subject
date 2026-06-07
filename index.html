@@ -227,8 +227,11 @@
                 title: "Bài 2: Tìm kiếm & Đánh giá", 
                 subtitle: "Khai thác học thuật",
                 slides: [
-                    { text: ["Sử dụng toán tử nâng cao: AND, OR, site:.edu.vn, filetype:pdf để thu hẹp phạm vi tìm kiếm."], img: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80" },
-                    { text: ["Đánh giá nguồn tin: Áp dụng mô hình CRAAP để lọc nhiễu thông tin."], img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80" }
+                    { 
+                        type: 'pdf', 
+                        text: ["Tài liệu nghiên cứu: Đánh giá phân tích 12 nguồn thông tin, tạp chí học thuật."], 
+                        file: "images/baitap2.pdf"
+                    },
                 ]
             },
             {
@@ -376,17 +379,34 @@
 
             document.getElementById('detail-title').textContent = data.title;
 
-            // Load toàn bộ ảnh vào khung (nhưng ẩn đi)
+            // Load toàn bộ phương tiện vào khung
             const imgWrapper = document.getElementById('image-wrapper');
             imgWrapper.innerHTML = '';
             currentSlidesArray.forEach((slide, i) => {
-                const img = document.createElement('img'); 
-                img.src = slide.img;
-                if(i === 0) img.classList.add('active'); 
-                imgWrapper.appendChild(img);
+                let element;
+                // Nếu slide là loại TÀI LIỆU HTML GIẢ LẬP
+                if(slide.type === 'document') {
+                    element = document.createElement('div');
+                    element.className = 'mock-pdf-container';
+                    element.innerHTML = slide.htmlContent;
+                } 
+                // NẾU SLIDE LÀ FILE PDF THẬT (Thêm đoạn này)
+                else if (slide.type === 'pdf') {
+                    element = document.createElement('iframe');
+                    element.src = slide.file;
+                    element.className = 'mock-pdf-container';
+                    element.style.border = 'none'; // Bỏ viền mặc định của iframe
+                }
+                // Mặc định là ẢNH
+                else {
+                    element = document.createElement('img'); 
+                    element.src = slide.img;
+                }
+                
+                if(i === 0) element.classList.add('active'); 
+                imgWrapper.appendChild(element);
             });
             
-            // Cập nhật giao diện lần đầu
             updateSlideContent();
         }
 
