@@ -50,6 +50,14 @@
         #btn-home.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
         #btn-home svg { width: 22px; height: 22px; fill: currentColor; }
 
+        #btn-cursor {
+            left: 85px;
+            width: 45px; height: 45px; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+        }
+        #btn-cursor svg { width: 20px; height: 20px; }
+        #btn-cursor.off { opacity: 0.4; }
+
         
         #cursor-invert {
             position: fixed; top: 0; left: 0; width: 150px; height: 150px;
@@ -184,6 +192,9 @@
 
     <div class="nav-btn icon-btn" id="btn-home" title="Về trang chủ">
         <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </div>
+    <div class="nav-btn icon-btn" id="btn-cursor" title="Bật/tắt con trỏ">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="currentColor"/></svg>
     </div>
     <div class="nav-btn" id="btn-theme">Dark Mode</div>
     
@@ -637,6 +648,14 @@
             });
         });
         document.addEventListener('mouseup', () => isMouseDown = false);
+
+        let isCursorOn = true;
+        const btnCursor = document.getElementById('btn-cursor');
+        btnCursor.addEventListener('click', () => {
+            isCursorOn = !isCursorOn;
+            cursorInvert.style.display = isCursorOn ? 'block' : 'none';
+            btnCursor.classList.toggle('off', !isCursorOn);
+        });
 
     </script>
 </body>
