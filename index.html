@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Siêu Thực</title>
+    <title>Portfolio</title>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -30,7 +30,7 @@
             transition: background-color 0.5s ease;
         }
 
-        /* --- CÁC NÚT ĐIỀU HƯỚNG --- */
+        
         .nav-btn {
             position: fixed; top: 30px; z-index: 10000; cursor: pointer;
             font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
@@ -50,7 +50,7 @@
         #btn-home.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
         #btn-home svg { width: 22px; height: 22px; fill: currentColor; }
 
-        /* --- CON TRỎ CHUỘT --- */
+        
         #cursor-invert {
             position: fixed; top: 0; left: 0; width: 150px; height: 150px;
             background-color: white; border-radius: 50%; pointer-events: none;
@@ -66,7 +66,7 @@
 
         #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        /* --- KHUNG KÍNH MỜ --- */
+        
         .glass-box {
             border: 1px solid var(--box-border); background: var(--box-bg);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -74,7 +74,7 @@
             color: var(--text-main); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* --- TRANG 1: INTRO --- */
+        
         #intro-view {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 10; width: 80%; max-width: 800px; padding: 40px 50px;
@@ -100,7 +100,7 @@
         .btn-enter:hover { background: var(--text-main); color: var(--bg-color); }
         .btn-enter:hover ~ #cursor-invert { width: 80px; height: 80px; }
 
-        /* --- TRANG 2: MENU CHỌN BÀI --- */
+        
         #menu-container {
             position: fixed; right: 0; top: 85px; height: calc(100vh - 100px); width: 440px; 
             z-index: 20; overflow-y: auto; overflow-x: hidden; padding: 20px 0; 
@@ -126,7 +126,7 @@
         .menu-item .m-title { font-weight: bold; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
         .menu-item .m-sub { font-size: 0.8rem; opacity: 0.7; margin-top: 5px; }
 
-        /* --- TRANG 3: KHUNG CHI TIẾT BÀI TẬP --- */
+        
         #detail-view {
             position: absolute; top: 50%; left: calc((100% - 380px) / 2); 
             transform: translate(-50%, 150%); opacity: 0; pointer-events: none;
@@ -152,7 +152,7 @@
             margin-bottom: 15px; width: 100%;
         }
         
-        /* Cấu hình chung cho Ảnh, PDF và Text */
+        
         .image-wrapper > img, .image-wrapper > iframe, .image-wrapper > .text-only-slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; transition: opacity 0.4s ease; border-radius: 5px;
@@ -161,7 +161,7 @@
         .image-wrapper > img { object-fit: contain; }
         .image-wrapper > iframe { border: none; background: #fff; }
         
-        /* Cấu hình phần Tử hiển thị Tổng kết (Không ảnh) */
+        
         .image-wrapper > .text-only-slide {
             background: var(--box-bg); padding: 30px 40px; box-sizing: border-box;
             overflow-y: auto; text-align: left;
@@ -304,7 +304,7 @@
                 slides: [
                     { 
                         type: 'text_only', 
-                        text: [], // Để trống text bên ngoài để giấu phần mô tả ngắn
+                        text: [],
                         htmlContent: `
                             <h3>1. Chia sẻ trải nghiệm và cảm nhận</h3>
                             <p>Quá trình xây dựng Portfolio này là một trải nghiệm thực tế tuyệt vời. Thay vì chỉ tiếp thu lý thuyết công nghệ một cách thụ động, tôi đã có cơ hội tự tay ứng dụng các công cụ kỹ thuật số và Trí tuệ nhân tạo (AI) vào việc giải quyết những bài toán cụ thể. Việc tạo ra một trang web hoàn chỉnh để lưu trữ dữ liệu mang lại cho tôi cảm giác tự hào và động lực học tập rất lớn.</p>
@@ -321,7 +321,7 @@
             }
         ];
 
-        /* === LOGIC UI & OSU INFINITE SCROLL === */
+        
         const introView = document.getElementById('intro-view');
         const menuContainer = document.getElementById('menu-container');
         const detailView = document.getElementById('detail-view');
@@ -415,7 +415,7 @@
             ripples.push({ x: 100, y: 100, age: 0, power: 50 }); 
         });
 
-        /* === LOGIC ĐIỀU KHIỂN SLIDER ĐỒNG BỘ === */
+        
         let currentSlidesArray = []; 
         let currentSlideIndex = 0;
 
@@ -430,7 +430,7 @@
             imgWrapper.innerHTML = '';
             currentSlidesArray.forEach((slide, i) => {
                 let element;
-                // Xử lý các loại phương tiện khác nhau: PDF, Text, Image
+
                 if (slide.type === 'pdf') {
                     element = document.createElement('iframe');
                     element.src = slide.file + "#view=FitH";
@@ -454,7 +454,7 @@
             const currentSlide = currentSlidesArray[currentSlideIndex];
             const stepsDiv = document.getElementById('detail-steps');
             
-            // Xử lý ẩn/hiện mục các bước (nếu là trang tổng kết thì giấu cái này đi)
+
             if (currentSlide.text && currentSlide.text.length > 0) {
                 stepsDiv.style.display = 'block';
                 stepsDiv.style.opacity = 0; 
@@ -469,11 +469,10 @@
                 stepsDiv.innerHTML = '';
             }
 
-            // Cập nhật Trạng thái Active
             const mediaElements = document.getElementById('image-wrapper').children;
             Array.from(mediaElements).forEach((el, i) => el.classList.toggle('active', i === currentSlideIndex));
             
-            // Cập nhật Dấu chấm
+
             const dotsContainer = document.getElementById('dots-container'); 
             dotsContainer.innerHTML = ''; 
             currentSlidesArray.forEach((_, i) => {
@@ -500,7 +499,7 @@
             ripples.push({ x: width/2 - 150, y: height - 150, age: 0, power: 10 });
         });
 
-        /* === CANVAS VẬT LÝ === */
+        
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         const cursorInvert = document.getElementById('cursor-invert'); const themeBtn = document.getElementById('btn-theme');
         let isDark = false; let canvasTheme = { shape: 'rgba(0, 0, 0, 0.4)', grid: 'rgba(200, 200, 200, 0.4)' };
@@ -610,7 +609,7 @@
         }
         animate();
 
-        /* Tương tác chuột */
+        
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
             cursorInvert.style.transform = `translate(${mouseX - 75}px, ${mouseY - 75}px)`; 
