@@ -77,17 +77,23 @@
         /* --- TRANG 1: INTRO --- */
         #intro-view {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 10; text-align: center; width: 80%; max-width: 800px; padding: 40px;
-            border-radius: 10px;
+            z-index: 10; width: 80%; max-width: 800px; padding: 40px 50px;
+            border-radius: 12px;
         }
         #intro-view.hidden { transform: translate(-50%, -150%); opacity: 0; pointer-events: none; }
 
-        h1 { font-size: 2.5rem; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 10px; }
-        h2 { font-size: 1.1rem; font-weight: 400; letter-spacing: 2px; margin-bottom: 30px; color: var(--text-sub); }
-        .details p { font-size: 1.05rem; margin: 12px 0; text-align: left; line-height: 1.6; }
+        #intro-view h1 { text-align: center; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 5px; margin-top: 0; margin-bottom: 10px; }
+        #intro-view h2 { text-align: center; font-size: 1.1rem; font-weight: 400; letter-spacing: 2px; margin-bottom: 30px; color: var(--text-sub); }
+        .details p { font-size: 1.05rem; margin: 10px 0; text-align: left; line-height: 1.6; }
         .details strong { display: inline-block; width: 160px; }
+        
+        .intro-divider {
+            border: 0; border-top: 1px solid var(--box-border); margin: 25px 0; width: 100%;
+        }
+
+        .btn-center-wrapper { display: flex; justify-content: center; margin-top: 35px; }
         .btn-enter {
-            display: inline-block; margin-top: 35px; padding: 12px 35px; border: 1px solid var(--text-main);
+            display: inline-block; padding: 12px 35px; border: 1px solid var(--text-main);
             background: transparent; color: var(--text-main); font-size: 1.1rem; font-weight: 500;
             letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;
         }
@@ -132,11 +138,10 @@
 
         .project-header { font-size: 1.8rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px solid var(--text-main); padding-bottom: 10px;}
         
-        .project-steps { margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6; color: var(--text-sub); flex-shrink: 0; min-height: 40px; transition: opacity 0.3s ease;}
+        .project-steps { margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6; color: var(--text-sub); flex-shrink: 0; transition: opacity 0.3s ease;}
         .project-steps ul { margin: 0; padding-left: 20px; }
         .project-steps li { margin-bottom: 8px; }
 
-        /* --- ĐÃ SỬA LẠI CSS ĐỂ PDF PHỦ KÍN 100% DIỆN TÍCH --- */
         .gallery-container {
             flex-grow: 1; border: 1px solid var(--box-border); border-radius: 8px;
             background-color: rgba(0,0,0,0.03); display: flex; flex-direction: column;
@@ -147,18 +152,22 @@
             margin-bottom: 15px; width: 100%;
         }
         
-        .image-wrapper img {
-            max-width: 100%; max-height: 100%; object-fit: contain;
-            position: absolute; opacity: 0; transition: opacity 0.4s ease; border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        /* CSS ép thẻ Iframe (PDF) phải giãn đủ 100% kích thước của vùng xám */
-        .image-wrapper iframe {
+        /* Cấu hình chung cho Ảnh, PDF và Text */
+        .image-wrapper > img, .image-wrapper > iframe, .image-wrapper > .text-only-slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 0.4s ease; border-radius: 5px; border: none; background: #fff;
+            opacity: 0; transition: opacity 0.4s ease; border-radius: 5px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        .image-wrapper > img { object-fit: contain; }
+        .image-wrapper > iframe { border: none; background: #fff; }
+        
+        /* Cấu hình phần Tử hiển thị Tổng kết (Không ảnh) */
+        .image-wrapper > .text-only-slide {
+            background: var(--box-bg); padding: 30px 40px; box-sizing: border-box;
+            overflow-y: auto; text-align: left;
+        }
+        .text-only-slide h3 { margin-top: 0; font-size: 1.3rem; color: var(--text-main); border-bottom: 1px solid var(--box-border); padding-bottom: 8px; margin-bottom: 15px;}
+        .text-only-slide p { color: var(--text-main); line-height: 1.7; margin-bottom: 25px; font-size: 1.05rem;}
         
         .image-wrapper .active { opacity: 1; z-index: 2; pointer-events: auto;}
 
@@ -186,18 +195,24 @@
         <h2>KỸ NĂNG SỐ & TRÍ TUỆ NHÂN TẠO</h2>
         <div class="details">
             <p><strong>Trường:</strong> Đại học Công nghệ - ĐHQGHN (UET)</p>
-            <p><strong>Lớp:</strong> EC1 - VNU1001_E252007</p>
-            <p><strong>Mã SV:</strong> 25022148</p>
-            <p><strong>Mục tiêu:</strong> Làm chủ các công cụ AI để tối ưu hóa quy trình nghiên cứu, lập trình và sáng tạo nội dung trong môi trường số.</p>
+            <p><strong>Ngành học:</strong> Điện tử Viễn thông / Khoa học máy tính</p>
+            <p><strong>Sở thích:</strong> Lập trình AI (Local LLMs), Ngôn ngữ & Dịch thuật, Khí quyển học</p>
+            <p><strong>Lớp:</strong> EC1 - VNU1001_E252007 <span style="margin: 0 15px;">|</span> <strong>Mã SV:</strong> 25022148</p>
+            
+            <hr class="intro-divider">
+            
+            <p style="margin-bottom: 15px;"><strong>Mục tiêu & Định hướng:</strong> Trở thành một kỹ sư nắm vững cốt lõi hệ thống, linh hoạt ứng dụng AI để tối ưu hóa quy trình nghiên cứu, lập trình và sáng tạo nội dung trong môi trường số.</p>
+            <p><strong>Mục tiêu Portfolio:</strong> "Thể hiện các kỹ năng số đã học", lưu trữ các sản phẩm cá nhân để dễ dàng truy cập và chia sẻ, đồng thời minh chứng cho tư duy liêm chính học thuật.</p>
         </div>
-        <div class="btn-enter" id="btn-explore">Portfolio</div>
+        <div class="btn-center-wrapper">
+            <div class="btn-enter" id="btn-explore">Khám Phá Dự Án</div>
+        </div>
     </div>
 
     <div id="menu-container"></div>
 
     <div id="detail-view" class="glass-box">
         <div class="project-header" id="detail-title">Tiêu đề bài</div>
-        
         <div class="project-steps" id="detail-steps"></div>
         
         <div class="gallery-container">
@@ -287,7 +302,21 @@
                 title: "Tổng Kết", 
                 subtitle: "Bài học rút ra",
                 slides: [
-                    { text: ["Sự chuyển dịch từ người dùng thụ động sang người điều khiển bằng 'Tư duy máy tính'."], img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80" }
+                    { 
+                        type: 'text_only', 
+                        text: [], // Để trống text bên ngoài để giấu phần mô tả ngắn
+                        htmlContent: `
+                            <h3>1. Chia sẻ trải nghiệm và cảm nhận</h3>
+                            <p>Quá trình xây dựng Portfolio này là một trải nghiệm thực tế tuyệt vời. Thay vì chỉ tiếp thu lý thuyết công nghệ một cách thụ động, tôi đã có cơ hội tự tay ứng dụng các công cụ kỹ thuật số và Trí tuệ nhân tạo (AI) vào việc giải quyết những bài toán cụ thể. Việc tạo ra một trang web hoàn chỉnh để lưu trữ dữ liệu mang lại cho tôi cảm giác tự hào và động lực học tập rất lớn.</p>
+
+                            <h3>2. Kiến thức và Kỹ năng cốt lõi đã học</h3>
+                            <p>Kỹ năng quan trọng nhất tôi nhận được là <strong>"Tư duy máy tính" (Computational Thinking)</strong> và <strong>Nghệ thuật Prompt Engineering</strong>. Tôi đã biết cách đặt câu hỏi đúng cấu trúc (Role-Context-Task-Format) để khai thác tối đa sức mạnh của AI. Ngoài ra, kỹ năng tổ chức dữ liệu logic và đánh giá độ tin cậy của thông tin (Mô hình CRAAP) giúp tôi tự tin hơn trong môi trường học thuật.</p>
+
+                            <h3>3. Điểm tâm đắc & Thách thức gặp phải</h3>
+                            <p><strong>Tâm đắc:</strong> Việc tích hợp AI vào quy trình sáng tạo đa phương tiện (Multi-AI Workflow) đã mở ra cho tôi những góc nhìn mới về hiệu suất công việc. Công nghệ có thể giúp con người tiết kiệm đến 80% thời gian nếu biết sử dụng đúng cách.</p>
+                            <p><strong>Thách thức:</strong> Khó khăn lớn nhất trong quá trình làm dự án là việc phải chọn lọc và đối chiếu lượng thông tin khổng lồ do AI tạo ra. Tôi phải liên tục bám sát vào bộ nguyên tắc đạo đức và liêm chính học thuật để đảm bảo bản thân không bị phụ thuộc hoàn toàn vào máy móc, giữ vững tư duy phản biện của riêng mình.</p>
+                        `
+                    }
                 ]
             }
         ];
@@ -299,7 +328,6 @@
         const btnHome = document.getElementById('btn-home');
         let isDetailTransitioning = false; let lastRectY = null;
         
-        // Render 3 bản sao của data để tạo vòng lặp vô tận
         function renderMenu() {
             menuContainer.innerHTML = '';
             for (let i = 0; i < 3; i++) {
@@ -387,7 +415,7 @@
             ripples.push({ x: 100, y: 100, age: 0, power: 50 }); 
         });
 
-        /* === LOGIC ĐIỀU KHIỂN SLIDER ĐỒNG BỘ (CHỮ VÀ ẢNH) === */
+        /* === LOGIC ĐIỀU KHIỂN SLIDER ĐỒNG BỘ === */
         let currentSlidesArray = []; 
         let currentSlideIndex = 0;
 
@@ -402,14 +430,15 @@
             imgWrapper.innerHTML = '';
             currentSlidesArray.forEach((slide, i) => {
                 let element;
-                // Nếu là PDF
+                // Xử lý các loại phương tiện khác nhau: PDF, Text, Image
                 if (slide.type === 'pdf') {
                     element = document.createElement('iframe');
-                    // Thêm tham số #view=FitH để ép PDF phóng to vừa khít chiều ngang
                     element.src = slide.file + "#view=FitH";
-                }
-                // Mặc định là ẢNH
-                else {
+                } else if (slide.type === 'text_only') {
+                    element = document.createElement('div');
+                    element.className = 'text-only-slide';
+                    element.innerHTML = slide.htmlContent;
+                } else {
                     element = document.createElement('img'); 
                     element.src = slide.img;
                 }
@@ -422,22 +451,29 @@
         }
 
         function updateSlideContent() {
-            // Cập nhật Text
             const currentSlide = currentSlidesArray[currentSlideIndex];
             const stepsDiv = document.getElementById('detail-steps');
-            stepsDiv.style.opacity = 0; 
-            setTimeout(() => {
-                let stepsHtml = '<ul>'; 
-                currentSlide.text.forEach(s => stepsHtml += `<li>${s}</li>`);
-                stepsDiv.innerHTML = stepsHtml + '</ul>';
-                stepsDiv.style.opacity = 1;
-            }, 150);
+            
+            // Xử lý ẩn/hiện mục các bước (nếu là trang tổng kết thì giấu cái này đi)
+            if (currentSlide.text && currentSlide.text.length > 0) {
+                stepsDiv.style.display = 'block';
+                stepsDiv.style.opacity = 0; 
+                setTimeout(() => {
+                    let stepsHtml = '<ul>'; 
+                    currentSlide.text.forEach(s => stepsHtml += `<li>${s}</li>`);
+                    stepsDiv.innerHTML = stepsHtml + '</ul>';
+                    stepsDiv.style.opacity = 1;
+                }, 150);
+            } else {
+                stepsDiv.style.display = 'none';
+                stepsDiv.innerHTML = '';
+            }
 
-            // Cập nhật Ảnh/PDF
+            // Cập nhật Trạng thái Active
             const mediaElements = document.getElementById('image-wrapper').children;
             Array.from(mediaElements).forEach((el, i) => el.classList.toggle('active', i === currentSlideIndex));
             
-            // Cập nhật Chấm
+            // Cập nhật Dấu chấm
             const dotsContainer = document.getElementById('dots-container'); 
             dotsContainer.innerHTML = ''; 
             currentSlidesArray.forEach((_, i) => {
